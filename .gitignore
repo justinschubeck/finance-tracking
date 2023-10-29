@@ -1,1 +1,206 @@
-finance/
+# OS and Editor Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Build and Dependency Directories
+node_modules/
+dist/
+build/
+*.log
+
+# Package files
+*.lock
+package-lock.json
+yarn.lock
+
+# Environment Files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# Compiled Source
+*.log
+*.min.js
+*.min.css
+
+# Dependency directories
+/bower_components/
+/jspm_packages/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Node.js
+npm-debug.log
+/node_modules/
+npm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Java
+*.class
+
+# Ruby
+*.gem
+*.rbc
+/.config
+/coverage
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+# IDEs and Editors
+/.idea
+/.vscode
+*.sublime-workspace
+
+# Compiled Gradle plugins
+.gradle/
+
+# Compiled SASS
+.sass-cache/
+
+# Heroku
+/.heroku
+
+# Mac
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Django
+*.log
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Visual Studio Code
+.vscode/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Android Studio
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+
+# Xcode
+*.xcworkspace
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+
+# NetBeans
+/nbproject/private/
+/nbproject/Makefile-*
+/nbproject/Package-*
+/nbproject/bundle-*/
+
+# Gradle
+.gradle/
+/build/
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.pdf
+
+# Log Files
+*.log
+log/
+logs/
+
+# Docker Compose
+docker-compose.override.yml
+*.override.yml
+
+# Editor Config
+.editorconfig
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Jekyll
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Yeoman
+.yeoman-generator
+
+# Chef
+.kitchen/
+
+# Nanoc
+/output/
+
+# Hugo
+/public/
+
+# Hugo Sites
+/resources/
+
+# OpenCart
+/config.php
+
+# Oracle SQL Developer
+*.sql
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# SQLite
+*.sqlite
+*.sqlite3
+
+# RubyMine
+/.ruby-bundle
+
+# Rust
+/target/
+*.rlib
+
+# Log Files
+*.log
+
+# macOS
+*.DS_Store
+
+# Windows
+Thumbs.db
