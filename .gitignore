@@ -18,6 +18,7 @@ package-lock.json
 yarn.lock
 
 # Environment Files
+*env*/
 .env
 .env.local
 .env.*.local

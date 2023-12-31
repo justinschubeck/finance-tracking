@@ -2,21 +2,27 @@ import tkinter as tk
 from tkinter import messagebox
 from tkcalendar import DateEntry, Calendar
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, date
 
 from util.general import get_df_from_excel, save_df_to_excel, set_GUI_size
 
 # FIXME: put in config or parser parameter
 FILE = 'entries/2024.xlsx' 
 COLUMNS = ["Type", "Category", "Date", "Vendor", "Medium", "Amount", "Note"]
-FONT = ("Arial", 14)
-ENTRY_WIDTH = 30
+FONT = ("Arial", 12)
+ENTRY_WIDTH = 20
+
+selected_color_bg = "#E0E0E0"  # Selected Button Background Color (Green)
+selected_color_fg = "#000000"  # Selected Button Text Color (White)
+
+non_selected_color_bg = "#E0E0E0"  # Non-Selected Button Background Color (Light Gray)
+non_selected_color_fg = "#000000"  # Non-Selected Button Text Color (Black)
 # -------------------------------------------------------------------------------- #
 
 # Load in dataframe. 
 transactions_df: pd.DataFrame = get_df_from_excel(
     file=FILE,
-    columns=COLUMNS
+    columns=COLUMNS,
 )
 
 # Create main window
@@ -30,9 +36,15 @@ transaction_type.set("Expense")
 
 # Dropdown menu for Transaction Type
 transaction_type_label = tk.Label(root, text="Transaction Type:")
-transaction_type_label.pack()
-transaction_type_menu = tk.OptionMenu(root, transaction_type, "Income", "Expense")
-transaction_type_menu.pack()
+transaction_type_label.grid(row=1, column=1, columnspan=2, rowspan=1)
+
+# RadioButtons for Income and Expense
+income_radio = tk.Radiobutton(root, text="Income", variable=transaction_type, value="Income", 
+                              indicator=0, bg=selected_color_bg, fg=selected_color_fg, width=20)
+income_radio.grid(row=2, column=1, rowspan=2)
+expense_radio = tk.Radiobutton(root, text="Expense", variable=transaction_type, value="Expense", 
+                               indicator=0, bg=selected_color_bg, fg=selected_color_fg, width=20)
+expense_radio.grid(row=2, column=2, rowspan=2)
 ###############################################################################
 
 
@@ -68,50 +80,64 @@ expense_categories = [
 category_options = tk.StringVar(root)
 category_options.set(expense_categories[0])  # Default value
 
-# Function to update Category dropdown based on Transaction Type
-def update_categories(*args):
-    selected_type = transaction_type.get()
-    if selected_type == "Income":
-        category_menu["menu"].delete(0, "end")  # Clear previous options
-        for category in income_categories:
-            category_menu["menu"].add_command(label=category, command=tk._setit(category_options, category))
-        category_options.set(income_categories[0])  # Set default value for Income
-    elif selected_type == "Expense":
-        category_menu["menu"].delete(0, "end")  # Clear previous options
-        for category in expense_categories:
-            category_menu["menu"].add_command(label=category, command=tk._setit(category_options, category))
-        category_options.set(expense_categories[0])  # Set default value for Expense
-
-# Trace the changes in the Transaction Type variable and update the Category dropdown accordingly
-transaction_type.trace("w", update_categories)
-
 # Dropdown menu for Category
 category_label = tk.Label(root, text="Category:")
-category_label.pack()
-category_menu = tk.OptionMenu(root, category_options, *expense_categories)
-category_menu.pack()
+category_label.grid(row=4, column=1, columnspan=2, rowspan=2)
+
+# Function to update Category based on Transaction Type
+def update_categories(*args):
+    selected_type = transaction_type.get()
+
+    if selected_type == "Income":
+        categories = income_categories
+    else:
+        categories = expense_categories
+    category_options.set(categories[0])
+        
+    # Clear existing Radiobuttons
+    for widget in category_frame.winfo_children():
+        widget.destroy()
+    
+    # Create new Radiobuttons
+    for i, category in enumerate(categories):
+        tk.Radiobutton(category_frame, text=category, variable=category_options, value=category,
+                       indicator=0, bg=selected_color_bg, fg=selected_color_fg, width=20).grid(row=6+i, column=1, columnspan=2)
+
+# Frame to hold the category Radiobuttons
+category_frame = tk.Frame(root)
+category_frame.grid(row=6, column=1, columnspan=2)
+update_categories()
+
+# Trace the changes in the Transaction Type variable and update the Category accordingly
+transaction_type.trace("w", update_categories)
 ###############################################################################
 
 
 ##################################### DATE ####################################
 date_label = tk.Label(root, text="Date:")
-date_label.pack()
+date_label.grid(row=0, column=0)
+root.columnconfigure(0, minsize=275)
 
 # Create a DateEntry widget
 date_entry = DateEntry(root, width=12, background='darkblue', foreground='white', borderwidth=2,)
 
+# Extract year, month, and day from today's date
+today = date.today()
+year = today.year
+month = today.month
+day = today.day
 date_entry = Calendar(root, selectmode = 'day',
-                      year = 2023, month = 10,
-                      day = 30)
-date_entry.pack(padx=10, pady=10)
+                      year = year, month = month,
+                      day = day)
+date_entry.place(x=10, y=25)
 ###############################################################################
 
 
 #################################### VENDOR ###################################
 vendor_label = tk.Label(root, text="Vendor:")
-vendor_label.pack()
+vendor_label.grid(row=0, column=3, padx=5)
 vendor_entry = tk.Entry(root, font=FONT, width=ENTRY_WIDTH)
-vendor_entry.pack()
+vendor_entry.grid(row=1, column=3, padx=5)
 ###############################################################################
 
 
@@ -132,25 +158,50 @@ medium_entry = tk.StringVar(root)
 medium_entry.set("Amex Credit")
 
 medium_label = tk.Label(root, text="Medium:")
-medium_label.pack()
+medium_label.grid(row=4, column=3)
 medium_menu = tk.OptionMenu(root, medium_entry, *medium_categories)
-medium_menu.pack()
+medium_menu.grid(row=5, column=3)
 ###############################################################################
 
 
 #################################### AMOUNT ###################################
 amount_label = tk.Label(root, text="Amount:")
-amount_label.pack()
+amount_label.grid(row=2, column=3, padx=5)
 amount_entry = tk.Entry(root, font=FONT, width=ENTRY_WIDTH)
-amount_entry.pack()
+amount_entry.grid(row=3, column=3, padx=5)
+
+def format_currency(event):
+    entry_content = amount_entry.get()
+    
+    # Remove any non-digit characters from the input content
+    digits = [char for char in entry_content if char.isdigit()]
+
+    try:
+        # Convert the parsed digits to a float and format as currency
+        value = float("".join(digits)) / 100
+        formatted_value = "${:.2f}".format(value)
+        amount_entry.delete(0, tk.END)
+        amount_entry.insert(0, formatted_value)
+    except ValueError:
+        amount_entry.delete(0, tk.END)
+        amount_entry.insert(0, "$0.00")
+
+def handle_keypress(event):
+    # Allow only digits, backspace, and the decimal point
+    allowed_keys = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "\b"}
+    if event.char not in allowed_keys:
+        return 'break'
+amount_entry.bind("<KeyRelease>", format_currency)
+amount_entry.bind("<KeyPress>", handle_keypress)
+
 ###############################################################################
 
 
 ##################################### NOTE ####################################
 note_label = tk.Label(root, text="Note:")
-note_label.pack()
-note_entry = tk.Entry(root, font=FONT, width=ENTRY_WIDTH)
-note_entry.pack()
+note_label.grid(row=0, column=4)
+note_entry = tk.Text(root, font=FONT, width=ENTRY_WIDTH, wrap="word")
+note_entry.place(x=770, y=20)
 ###############################################################################
 
 # Function to handle adding transactions.
@@ -167,17 +218,26 @@ def add_transaction():
         "Date": date,
         "Vendor": vendor_entry.get(),
         "Medium": medium_entry.get(),
-        "Amount": amount_entry.get(),
-        "Note": note_entry.get()
+        "Amount": amount_entry.get().replace('$', ''),
+        "Note": note_entry.get("1.0", tk.END)
     }
 
-    transactions_df = pd.concat([transactions_df, pd.DataFrame(transaction_data, index=[0])], ignore_index=True)
-    save_df_to_excel(df=transactions_df, file=FILE)
-    messagebox.showinfo("Success", "Transaction added successfully!")
+    if(vendor_entry.get() == ''):
+        messagebox.showinfo("ERROR", "Missing vendor!")
+    elif(amount_entry.get() == '' or amount_entry.get() == '$0.00'):
+        messagebox.showinfo("ERROR", "Missing amount!")
+    else:
+        vendor_entry.delete(0, tk.END)
+        amount_entry.delete(0, tk.END)
+        note_entry.delete(1.0, tk.END)
+
+        transactions_df = pd.concat([transactions_df, pd.DataFrame(transaction_data, index=[0])], ignore_index=True)
+        save_df_to_excel(df=transactions_df, file=FILE)
+        messagebox.showinfo("Success", "Transaction added successfully!")
 
 # Button to add transaction
-add_button = tk.Button(root, text="Add Transaction", command=add_transaction)
-add_button.pack()
+add_button = tk.Button(root, text="Add Transaction", command=add_transaction, width=30, height=10, bg="green", fg="white")
+add_button.place(x=25, y=225)
 ###############################################################################
 
 # Run the main loop
