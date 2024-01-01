@@ -1,5 +1,5 @@
+import json
 import tkinter as tk
-from tkinter import messagebox
 from tkcalendar import DateEntry, Calendar
 import pandas as pd
 from datetime import datetime, date
@@ -29,6 +29,11 @@ transactions_df: pd.DataFrame = get_df_from_excel(
 root = tk.Tk()
 root.title("Finance Tracker")
 set_GUI_size(root)
+
+################################### STATUS ####################################
+status_label = tk.Label(root, text="Status will be shown here.", bd=1, relief=tk.SUNKEN, width=60, height=14)
+status_label.place(x=700, y=475)
+###############################################################################
 
 ############################## TRANSACATION TYPE ##############################
 transaction_type = tk.StringVar(root)
@@ -204,6 +209,7 @@ note_entry = tk.Text(root, font=FONT, width=ENTRY_WIDTH, wrap="word")
 note_entry.place(x=770, y=20)
 ###############################################################################
 
+##################################### ADD #####################################
 # Function to handle adding transactions.
 def add_transaction():
     global transactions_df
@@ -222,10 +228,11 @@ def add_transaction():
         "Note": note_entry.get("1.0", tk.END)
     }
 
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if(vendor_entry.get() == ''):
-        messagebox.showinfo("ERROR", "Missing vendor!")
+        status_label.config(text=f"{current_time}\nERROR: Missing vendor!", bg="lightcoral")
     elif(amount_entry.get() == '' or amount_entry.get() == '$0.00'):
-        messagebox.showinfo("ERROR", "Missing amount!")
+        status_label.config(text=f"{current_time}\nERROR: Missing amount!", bg="lightcoral")
     else:
         vendor_entry.delete(0, tk.END)
         amount_entry.delete(0, tk.END)
@@ -233,11 +240,30 @@ def add_transaction():
 
         transactions_df = pd.concat([transactions_df, pd.DataFrame(transaction_data, index=[0])], ignore_index=True)
         save_df_to_excel(df=transactions_df, file=FILE)
-        messagebox.showinfo("Success", "Transaction added successfully!")
+        status_label.config(text=f"{current_time}\nSUCCESS: Transaction added!\n" + json.dumps(transaction_data, indent=4), bg="lightgreen")
 
 # Button to add transaction
 add_button = tk.Button(root, text="Add Transaction", command=add_transaction, width=30, height=10, bg="green", fg="white")
 add_button.place(x=25, y=225)
+###############################################################################
+
+################################### DATES #####################################
+def get_last_dates():
+    global transactions_df
+    temp_df = transactions_df.copy()
+    temp_df['Date'] = pd.to_datetime(temp_df['Date'], format='%m/%d/%Y')
+    today_date = datetime.now().date()
+    result = temp_df.groupby('Medium')['Date'].max().reset_index()
+    output = ""
+    for index, row in result.iterrows():
+        output += f"{row['Medium']}: {row['Date'].strftime('%m/%d/%Y')},\n"
+
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    status_label.config(text=f"{current_time}\nDATES:\n" + output, bg="lightgrey")
+
+# Button to add transaction
+add_button = tk.Button(root, text="Get Last Dates", command=get_last_dates, width=30, height=5, bg="black", fg="white")
+add_button.place(x=25, y=400)
 ###############################################################################
 
 # Run the main loop

@@ -21,6 +21,6 @@ def save_df_to_excel(df: pd.DataFrame, file: str) -> None:
 def set_GUI_size(root) -> None:
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
-    window_width = int(screen_width * 0.8)  # 80% of the screen width
+    window_width = int(screen_width * 0.75)  # 80% of the screen width
     window_height = int(screen_height * 0.8)  # 80% of the screen height
     root.geometry(f"{window_width}x{window_height}")
