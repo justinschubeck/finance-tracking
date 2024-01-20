@@ -5,20 +5,13 @@ import pandas as pd
 from datetime import datetime, date
 
 from util.general import get_df_from_excel, save_df_to_excel, set_GUI_size
+from util.params import (
+    FILE, COLUMNS, FONT, ENTRY_WIDTH,
+    selected_color_bg, selected_color_fg,
+    income_categories, expense_categories, medium_categories
+)
 
-# FIXME: put in config or parser parameter
-FILE = 'entries/2024.xlsx' 
-COLUMNS = ["Type", "Category", "Date", "Vendor", "Medium", "Amount", "Note"]
-FONT = ("Arial", 12)
-ENTRY_WIDTH = 20
-
-selected_color_bg = "#E0E0E0"  # Selected Button Background Color (Green)
-selected_color_fg = "#000000"  # Selected Button Text Color (White)
-
-non_selected_color_bg = "#E0E0E0"  # Non-Selected Button Background Color (Light Gray)
-non_selected_color_fg = "#000000"  # Non-Selected Button Text Color (Black)
 # -------------------------------------------------------------------------------- #
-
 # Load in dataframe. 
 transactions_df: pd.DataFrame = get_df_from_excel(
     file=FILE,
@@ -54,33 +47,6 @@ expense_radio.grid(row=2, column=2, rowspan=2)
 
 
 ################################### CATEGORY ##################################
-
-# Sample lists of options
-income_categories = [
-    'Digital Payment', 
-    'Extra Income', 
-    'Gifts', 
-    'Interest', 
-    'Other', 
-    'Salary']
-expense_categories = [
-    'Bills', 
-    'Car Services', 
-    'Entertainment', 
-    'Food & Drink', 
-    'Gas', 
-    'Gifts', 
-    'Groceries', 
-    'Media & Subscriptions', 
-    'Other', 
-    'Rent & Utilities',
-    'Retirement',
-    'Services', 
-    'Shopping', 
-    'Student Loans', 
-    'Transport', 
-    'Travel']
-
 # Variables to store selected options
 category_options = tk.StringVar(root)
 category_options.set(expense_categories[0])  # Default value
@@ -147,18 +113,6 @@ vendor_entry.grid(row=1, column=3, padx=5)
 
 
 ################################### MEDIUM ####################################
-medium_categories = [
-    "Amex Credit",
-    "Bilt Credit",
-    "BoA Checking",
-    "BoA Credit",
-    "BoA Saving",
-    "Capital One Saving",
-    "Cash",
-    "Chase Credit",
-    "Venmo"
-]
-
 medium_entry = tk.StringVar(root)
 medium_entry.set("Amex Credit")
 
