@@ -1,4 +1,4 @@
-FILE = 'entries/2024.xlsx' 
+FILE = 'entries/example_2024.xlsx' 
 COLUMNS = ["Type", "Category", "Date", "Vendor", "Medium", "Amount", "Note"]
 FONT = ("Arial", 12)
 ENTRY_WIDTH = 20
