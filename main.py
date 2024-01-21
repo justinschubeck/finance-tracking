@@ -1,4 +1,3 @@
-import json
 import tkinter as tk
 from tkcalendar import DateEntry, Calendar
 import pandas as pd
@@ -206,8 +205,8 @@ add_button.place(x=25, y=225)
 def get_last_dates():
     global transactions_df
     temp_df = transactions_df.copy()
+    print(temp_df)
     temp_df['Date'] = pd.to_datetime(temp_df['Date'], format='%m/%d/%Y')
-    today_date = datetime.now().date()
     result = temp_df.groupby('Medium')['Date'].max().reset_index()
     output = ""
     for index, row in result.iterrows():
@@ -217,8 +216,31 @@ def get_last_dates():
     status_label.config(text=f"{current_time}\nDATES:\n" + output, bg="lightgrey")
 
 # Button to add transaction
-add_button = tk.Button(root, text="Get Last Dates", command=get_last_dates, width=30, height=5, bg="black", fg="white")
-add_button.place(x=25, y=400)
+get_last_button = tk.Button(root, text="Get Last Dates", command=get_last_dates, width=30, height=5, bg="black", fg="white")
+get_last_button.place(x=25, y=400)
+###############################################################################
+
+################################### DATES #####################################
+def get_last_transaction_of_medium():
+    global transactions_df
+    temp_df = transactions_df.copy() 
+    temp_df = temp_df[temp_df['Medium'] == medium_entry.get()]
+    temp_df['Date'] = pd.to_datetime(temp_df['Date'], format='%m/%d/%Y')
+    sorted_df = temp_df.sort_values(by='Date', ascending=True)
+    if len(sorted_df) == 0:
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        status_label.config(text=f"{current_time}\nNO DATA FOR MEDIUM \"" + medium_entry.get() + '\"!', bg="lightgrey")
+    else:
+        most_recent = sorted_df.iloc[-1]
+        print_most_recent = '\n'.join([f'{key.upper()}: {value}' for key, value in most_recent.items()])
+
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        status_label.config(text=f"{current_time}\nMOST RECENT ENTRY:\n" + print_most_recent, bg="lightgrey")
+        
+
+# Button to add transaction
+get_medium_button = tk.Button(root, text="Get Last Transaction of Medium", command=get_last_transaction_of_medium, width=30, height=5, bg="black", fg="white")
+get_medium_button.place(x=25, y=500)
 ###############################################################################
 
 # Run the main loop
