@@ -1,4 +1,4 @@
-FILE = 'entries/example_2024.xlsx' 
+FILE = 'entries/example_2024.xlsx'
 COLUMNS = ["Type", "Category", "Date", "Vendor", "Medium", "Amount", "Note"]
 FONT = ("Arial", 12)
 ENTRY_WIDTH = 20
@@ -18,7 +18,6 @@ income_categories = [
     'Salary',
     'Soccer Fees',
 ]
-# TODO: split up expenses better: insurances, car stuff, etc.
 expense_categories = [
     'Bills & Insurance', 
     'Car Service & Fees', 

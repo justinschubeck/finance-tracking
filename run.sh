@@ -1,10 +1,6 @@
 #!/bin/bash
 
-activate_virtualenv() {
-    if [ "$VIRTUAL_ENV" == "" ]; then
-        source venv/Scripts/activate
-    fi
-}
-
-activate_virtualenv
+NAME=venv
+source $NAME/Scripts/activate
 python3.11 main.py
+deactivate
