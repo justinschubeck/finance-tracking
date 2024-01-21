@@ -194,7 +194,8 @@ def add_transaction():
 
         transactions_df = pd.concat([transactions_df, pd.DataFrame(transaction_data, index=[0])], ignore_index=True)
         save_df_to_excel(df=transactions_df, file=FILE)
-        status_label.config(text=f"{current_time}\nSUCCESS: Transaction added!\n" + json.dumps(transaction_data, indent=4), bg="lightgreen")
+        print_transaction_data = '\n'.join([f'{key.upper()}: {value}' for key, value in transaction_data.items()])
+        status_label.config(text=f"{current_time}\nSUCCESS: Transaction added!\n" + str(print_transaction_data), bg="lightgreen")
 
 # Button to add transaction
 add_button = tk.Button(root, text="Add Transaction", command=add_transaction, width=30, height=10, bg="green", fg="white")
